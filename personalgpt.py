@@ -29,6 +29,8 @@ def execute_sql_command(statement):
     conn.close()
 
 def query_txt(query):
+
+    #run the query taking in the personal text file
     loader = DirectoryLoader("./data", glob="*.txt")
     index = VectorstoreIndexCreator().from_loaders([loader])
 
@@ -41,7 +43,7 @@ def query_db(query):
     llm = ChatOpenAI()
     db_chain = SQLDatabaseChain.from_llm(llm, db, verbose=True)
 
-    #run the query
+    #run the query taking in the personal database
     return db_chain.run(query)
 
 def main(): 
