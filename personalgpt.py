@@ -75,7 +75,6 @@ def main():
 
         #predict whether the question wants data from database vs text file
         res = model.predict(inp)
-        print(res[0][0])
 
         if res[0][0] < 0.5:
             #model predicts its a database question
@@ -87,6 +86,14 @@ def main():
             answer = query_txt(query)
 
         print(answer)
+        response = input("Did I query the wrong file? ")
+        if response.lower() == "yes":
+            if res[0][0] < 0.5:
+                answer = query_txt(query)
+            else:
+                answer = query_db(query)
+            print(answer)
+
 
 if __name__ == "__main__":
     main()
