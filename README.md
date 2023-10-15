@@ -6,5 +6,6 @@ and having the chat bot retrieve information from the database.
 
 ## Tools Used
 [LangChain](https://www.langchain.com/)
+[OpenAI](https://platform.openai.com/overview)
 
 ## Examples
