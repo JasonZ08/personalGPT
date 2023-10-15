@@ -1,7 +1,6 @@
 import pandas as pd
 from keras.preprocessing.text import Tokenizer
-import tensorflow
-import numpy as np
+import pickle
 from keras.preprocessing.sequence import pad_sequences
 from sklearn.model_selection import train_test_split
 from keras.models import Sequential
@@ -47,12 +46,6 @@ model.summary()
 
 hist = model.fit(X_train, y_train, validation_split=0.1, epochs=20, batch_size=20)
 
-input = ["What homework is due next week?"]
-
-tokenizer.fit_on_texts(input)
-sequences = tokenizer.texts_to_sequences(input)
-input = pad_sequences(sequences, maxlen=max_length)
-
-res = model.predict(input)
-
-print(res[0][0])
+model_pkl_file = "database_text_question_classifier.pkl"
+with open(model_pkl_file, 'wb') as file:  
+    pickle.dump(model, file)
