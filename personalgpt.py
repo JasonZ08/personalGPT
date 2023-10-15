@@ -12,6 +12,15 @@ from keras.preprocessing.text import Tokenizer
 import pickle
 import sqlite3
 
+def append_to_file(statement):
+    try:
+        file = open("./data/data.txt", "a")
+        file.write(statement + "\n")
+        file.close()
+        print("Input successfully added to the file.")
+    except:
+        print("There was something wrong appending your message to the text file.")
+
 def execute_sql_command(statement):
 
     #connect to database and execute the command
@@ -59,6 +68,10 @@ def main():
 
         #call the execute sql function
         execute_sql_command(query[colon_index+1:].strip())
+    elif colon_index != -1 and query[:colon_index] == "TEXTINPUT":
+
+        #open the file and append data to it
+        append_to_file(query[colon_index+1:].strip())
     else:
         #get the model from the pickle file
         model_pkl_file = "database_text_question_classifier.pkl"
@@ -78,14 +91,14 @@ def main():
 
         if res[0][0] < 0.5:
             #model predicts its a database question
-            #call query database
             answer = query_db(query)
         else:
             #model predicts its a text question
-            #call query text
             answer = query_txt(query)
 
         print(answer)
+
+        #if machine learning model predicted wrong, ask again and switch
         response = input("Did I query the wrong file? ")
         if response.lower() == "yes":
             if res[0][0] < 0.5:

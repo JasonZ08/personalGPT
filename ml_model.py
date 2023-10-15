@@ -38,14 +38,28 @@ model.add(Embedding(max_words, 32, input_length=max_length))
 model.add(Flatten())
 model.add(Dense(128, activation='relu'))
 model.add(Dense(64, activation='relu'))
+model.add(Dense(64, activation='relu'))
 model.add(Dense(32, activation='relu'))
+model.add(Dense(16, activation='relu'))
 model.add(Dense(1, activation='sigmoid'))
 model.compile(loss='binary_crossentropy', optimizer='adam', metrics=['accuracy']) 
 model.summary()
 
 
-hist = model.fit(X_train, y_train, validation_split=0.1, epochs=20, batch_size=20)
+hist = model.fit(X_train, y_train, validation_split=0.3, epochs=20, batch_size=15)
 
 model_pkl_file = "database_text_question_classifier.pkl"
 with open(model_pkl_file, 'wb') as file:  
     pickle.dump(model, file)
+
+"""
+inp = ["What specific words or sentences or things are going to text?"]
+tokenizer = Tokenizer()
+tokenizer.fit_on_texts(inp)
+sequences = tokenizer.texts_to_sequences(inp)
+inp = pad_sequences(sequences, maxlen=max_length)
+
+#predict whether the question wants data from database vs text file
+res = model.predict(inp)
+print(res[0][0])
+"""
