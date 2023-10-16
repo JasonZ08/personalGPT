@@ -1,0 +1,6 @@
+.chatMessage {
+    width: fit-content;
+    max-width: 40vh;
+    word-wrap: break-word;
+    border-radius: 4vh;
+}

@@ -1,34 +1,42 @@
 import React, { useState } from 'react'
-import Button from 'react-bootstrap/Button'
-import Form from 'react-bootstrap/Form'
+import Header from './Navbar/Navbar'
+import TextBox from './TextBox/TextBox'
+import Home from './Home/Home'
 import 'bootstrap/dist/css/bootstrap.min.css'
 
 function App() {
 
   const [value, setValue] = useState("")
+  const [messageList, setMessageList] = useState([""])
+  const [myData, setMyData] = useState("") 
+  
 
-  const onFormSubmit = () => {
-    fetch("/chat", {
-      method: 'POST',
-      headers: { "Content-Type": "application/json"},
-      body: JSON.stringify(value)
-    }).then(() => {
-      console.log(JSON.stringify({"Message": value}))
-      console.log("hi")
+  const onFormSubmit = async () => {
+    
+    setMessageList((messageList) => [...messageList, {message: value, user:true}])
+    
+    const response = await fetch("/chat", {
+          method: 'POST',
+          headers: { "Content-Type": "application/json"},
+          body: JSON.stringify(value)
     })
+    const data = await response.json()
+
+
+    setMyData(data)
+    console.log(myData)
+
+    const answer = data.response
+
+    setMessageList((messageList) => [...messageList, {message: answer, user:false}])
+
   }
 
   return (
     <div>
-      Hello World!
-      <Form onSubmit={onFormSubmit}>
-        <Form.Group className="mb-3" controlId="exampleForm.ControlInput1">
-            <Form.Label>Message</Form.Label>
-            <Form.Control onChange={(e) => setValue(e.target.value)} placeholder="Your Message" />
-        </Form.Group>
-        <Button variant='primary' onClick={onFormSubmit}>Submit</Button>
-      </Form>
-      {value}
+      <Header />
+      <Home messageList={messageList}/>
+      <TextBox setMessageInput = {setValue} submitMessage = {onFormSubmit}/>
     </div>
   );
 }
