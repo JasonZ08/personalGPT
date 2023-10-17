@@ -19,13 +19,15 @@ app = Flask(__name__)
 
 def chat(): 
     def append_to_file(statement):
+
+        #add data to text file
         try:
             file = open("./data/data.txt", "a")
             file.write(statement + "\n")
             file.close()
-            print("Input successfully added to the file.")
+            return "Input successfully added to the file."
         except:
-            print("There was something wrong appending your message to the text file.")
+            return "There was something wrong appending your message to the text file."
 
     def execute_sql_command(statement):
 
@@ -35,13 +37,12 @@ def chat():
 
         try:
             cur.execute(statement)
-            print("SQL statement executed successfully.")
+            conn.commit()
+            cur.close()
+            conn.close()
+            return "SQL statement executed successfully."
         except:
-            print("There is something wrong with your SQL insert statement.")
-
-        conn.commit()
-        cur.close()
-        conn.close()
+            return "There is something wrong with your SQL insert statement."
 
     def query_txt(query):
 
@@ -73,48 +74,43 @@ def chat():
     if colon_index != -1 and query[:colon_index] == "SQLITEINPUT":
 
         #call the execute sql function
-        execute_sql_command(query[colon_index+1:].strip())
-        answer = "SQL statement executed successfully"
+        answer = execute_sql_command(query[colon_index+1:].strip())
     elif colon_index != -1 and query[:colon_index] == "TEXTINPUT":
 
         #open the file and append data to it
-        append_to_file(query[colon_index+1:].strip())
-        answer = "Input successfully added to file"
+        answer = append_to_file(query[colon_index+1:].strip())
     else:
         #get the model from the pickle file
         model_pkl_file = "database_text_question_classifier.pkl"
         with open(model_pkl_file, 'rb') as file:  
             model = pickle.load(file)
-        max_length = 50
+
+        #get the tokenizer from the pickle file
+        token_pkl_file = "tokenizer.pkl"
+        with open(token_pkl_file, 'rb') as file:  
+            tokenizer = pickle.load(file)
+
+        max_length = 30
 
         #have the tokenizer convert the input into numeric data
         inp = [query]
-        tokenizer = Tokenizer()
-        tokenizer.fit_on_texts(inp)
         sequences = tokenizer.texts_to_sequences(inp)
         inp = pad_sequences(sequences, maxlen=max_length)
 
         #predict whether the question wants data from database vs text file
         res = model.predict(inp)
-
-        if res[0][0] < 0.5:
+        print(res)
+        if res[0][1] > res[0][0]:
             #model predicts its a database question
             answer = query_db(query)
         else:
             #model predicts its a text question
             answer = query_txt(query)
 
-        print(answer)
+    
+    print(answer)
 
     return {"response": answer}
-
-        #if machine learning model predicted wrong, ask again and switch
-        #response = input("Did I query the wrong file? ")
-        #if response.lower() == "yes":
-            #if res[0][0] < 0.5:
-                #answer = query_txt(query)
-            #else:
-                #answer = query_db(query)
 
 if __name__ == "__main__":
     app.run(debug=True)
