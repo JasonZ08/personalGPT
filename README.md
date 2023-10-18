@@ -15,4 +15,8 @@ helps the chat bot figure out where to search.
 [Keras](https://keras.io/)
 
 ## Examples
-![image](https://github.com/JasonZ08/personalGPT/assets/87089616/41b90c8d-416c-4e4c-80b4-b0a352e13982)
+![Insert_Database_Ex](https://github.com/JasonZ08/personalGPT/assets/87089616/a8be0bb9-a766-4551-bb43-3fc433c4ef37)
+
+![Database_Example](https://github.com/JasonZ08/personalGPT/assets/87089616/76556db2-c04f-4980-94e1-6e970ae70786)
+
+![Text_Example](https://github.com/JasonZ08/personalGPT/assets/87089616/5e805901-3843-4296-9f7e-fa8731042bd1)
